@@ -23,8 +23,9 @@ public class JwtUtilTest {
         long expirationTime = 3600000L;
         String issuer = "exampleIssuer";
         String audience = "exampleAudience";
+        String tokenType = "exampleTokenType";
 
-        String token = jwtUtil.createToken(userId, expirationTime, issuer, audience);
+        String token = jwtUtil.createToken(userId, expirationTime, issuer, audience, tokenType);
         Assertions.assertNotNull(token, "Token should not be null");
         Assertions.assertTrue(token.contains("."), "Token should contain '.' to separate header, payload, and signature");
     }
@@ -45,8 +46,9 @@ public class JwtUtilTest {
         long expirationTime = 3600000L;
         String issuer = "exampleIssuer";
         String audience = "exampleAudience";
+        String tokenType = "exampleTokenType";
 
-        String token = jwtUtil.createToken(userId, expirationTime, issuer, audience);
+        String token = jwtUtil.createToken(userId, expirationTime, issuer, audience, tokenType);
         boolean isValid = jwtUtil.isTokenValid(token);
         Assertions.assertTrue(isValid, "Token should be valid");
     }
@@ -57,8 +59,9 @@ public class JwtUtilTest {
         long expirationTime = -10000L;
         String issuer = "exampleIssuer";
         String audience = "exampleAudience";
+        String tokenType = "exampleTokenType";
 
-        String token = jwtUtil.createToken(userId, expirationTime, issuer, audience);
+        String token = jwtUtil.createToken(userId, expirationTime, issuer, audience, tokenType);
         Assertions.assertThrows(BadRequestException.class, () -> jwtUtil.isTokenValid(token), "Expired token should throw BadRequestException");
     }
 
@@ -75,8 +78,9 @@ public class JwtUtilTest {
         long expirationTime = 3600000L;
         String issuer = "exampleIssuer";
         String audience = "exampleAudience";
+        String tokenType = "exampleTokenType";
 
-        String token = jwtUtil.createToken(userId, expirationTime, issuer, audience);
+        String token = jwtUtil.createToken(userId, expirationTime, issuer, audience, tokenType);
         String[] parts = token.split("\\.");
         String tamperedToken = parts[0] + "." + parts[1] + "." + "tamperedSignature";
 

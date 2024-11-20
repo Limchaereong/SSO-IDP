@@ -1,0 +1,20 @@
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "kid": "kid-fixed-key",
+      "use": "sig",
+      "alg": "RS256",
+      "n": "public-key-value-here",
+      "e": "AQAB"
+    },
+    {
+      "kty": "RSA",
+      "kid": "another-key-id",
+      "use": "sig",
+      "alg": "RS256",
+      "n": "another-public-key-value-here",
+      "e": "AQAB"
+    }
+  ]
+}

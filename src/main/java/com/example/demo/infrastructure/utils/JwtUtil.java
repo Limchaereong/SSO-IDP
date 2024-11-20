@@ -6,6 +6,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
 import com.example.demo.common.exception.BadRequestException;
 import com.example.demo.common.exception.InternalServerErrorException;
 import com.example.demo.common.exception.UnauthorizedException;
@@ -14,15 +16,16 @@ import com.example.demo.common.model.TokenPayload;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Component
 public class JwtUtil {
     
     private final String secretKey = "idpPrivateKey";
     private final String KID = "kid-fixed-key";
-    private final ObjectMapper objectMapper = new ObjectMapper(); // ObjectMapper 인스턴스 생성
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public String createToken(String userId, long expirationTime, String issuer, String audience) {
+    public String createToken(String userId, long expirationTime, String issuer, String audience, String tokenType) {
         long expiration = System.currentTimeMillis() + expirationTime;
-        TokenPayload tokenPayload = new TokenPayload(userId, expiration, issuer, audience);
+        TokenPayload tokenPayload = new TokenPayload(userId, expiration, issuer, audience, tokenType);
         String header = createHeader("HS256", "JWT", KID);
         String payload = createPayload(tokenPayload);
         String signature = generateSignature(header + "." + payload);
@@ -31,7 +34,7 @@ public class JwtUtil {
 
     public String createRefreshToken(String userId, long expirationTime) {
         long expiration = System.currentTimeMillis() + expirationTime;
-        TokenPayload tokenPayload = new TokenPayload(userId, expiration, "", "");
+        TokenPayload tokenPayload = new TokenPayload(userId, expiration, "", "", "REFRESH");
         String header = createHeader("HS256", "JWT", "");
         String payload = createPayload(tokenPayload);
         String signature = generateSignature(header + "." + payload);
@@ -73,6 +76,25 @@ public class JwtUtil {
             return true;
         } catch (BadRequestException | UnauthorizedException e) {
             throw e;
+        } catch (Exception e) {
+            throw new UnauthorizedException(ErrorCode.TOKEN_VALIDATION_FAILED);
+        }
+    }
+    
+    public String getUserIdFromToken(String token) {
+    	try {
+    		String[] parts = token.split("\\,");
+    		if(parts.length != 3) {
+    			throw new BadRequestException(ErrorCode.TOKEN_NOT_CORRECT_FORMAT);
+    		}
+    		
+    		String payload = parts[1];
+    		
+    		String decodedPayload = new String(Base64.getUrlDecoder().decode(payload), StandardCharsets.UTF_8);
+
+            Map<String, String> payloadMap = objectMapper.readValue(decodedPayload, new TypeReference<Map<String, String>>() {});
+
+            return payloadMap.get("userId");
         } catch (Exception e) {
             throw new UnauthorizedException(ErrorCode.TOKEN_VALIDATION_FAILED);
         }

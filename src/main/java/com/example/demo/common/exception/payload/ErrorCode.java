@@ -12,8 +12,13 @@ public enum ErrorCode {
 	INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다."),
 	TOKEN_GENERATION_FAILED(HttpStatus.UNAUTHORIZED, "토큰 생성에 실패하였습니다."),
 	TOKEN_VALIDATION_FAILED(HttpStatus.UNAUTHORIZED, "토큰 유효성 검사에 실패하였습니다."),
+	PASSWORD_NOT_CORRECT(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
 
 	// 404 - Not Found
+	NOT_FOUND_JWKS_FILE(HttpStatus.NOT_FOUND, "JWKS 파일을 찾지 못했습니다"),
+	NOT_FOUND_KEYS(HttpStatus.NOT_FOUND, "Keys 값들을 찾지 못했습니다."),
+	JWKS_ERROR(HttpStatus.NOT_FOUND, "JWKS가 제대로 제공되지 않았습니다."),
+	NOT_FOUND_USER(HttpStatus.NOT_FOUND, "일치하는 회원을 찾지 못했습니다"),
 
 	// 500 - Internal Server Error
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부에 문제가 발생했습니다."),
