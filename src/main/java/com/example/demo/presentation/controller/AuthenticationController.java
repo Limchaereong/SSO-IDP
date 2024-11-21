@@ -13,19 +13,36 @@ import com.example.demo.common.dto.response.TokenResponseDto;
 import com.example.demo.common.response.ApiResponse;
 import com.example.demo.service.AuthenticationService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
-	
-	@Autowired
-	private AuthenticationService authenticationService;
-	
-	@PostMapping("/login")
-	public ResponseEntity<ApiResponse<TokenResponseDto>> login(@RequestBody AuthenticationRequestDto request, HttpSession session) {
-		TokenResponseDto tokens = authenticationService.authenticate(request, session);
-		return ResponseEntity.ok(ApiResponse.success(tokens));
-	}
-
+    
+    @Autowired
+    private AuthenticationService authenticationService;
+    
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody AuthenticationRequestDto request, HttpServletResponse response) {
+        TokenResponseDto tokens = authenticationService.authenticate(request);
+        
+        Cookie accessTokenCookie = new Cookie("accessToken", tokens.accessToknen());
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setPath("/");
+        response.addCookie(accessTokenCookie);
+        
+        Cookie idTokenCookie = new Cookie("idToken", tokens.idToken());
+        idTokenCookie.setHttpOnly(true);
+        idTokenCookie.setPath("/");
+        response.addCookie(idTokenCookie);
+        
+        Cookie refreshTokenCookie = new Cookie("refreshToken", tokens.refreshToken());
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        response.addCookie(refreshTokenCookie);
+        
+        return ResponseEntity.ok(ApiResponse.success("Login successful"));
+    }
 }

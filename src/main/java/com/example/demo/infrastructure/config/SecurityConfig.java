@@ -18,7 +18,7 @@ public class SecurityConfig {
 			.sessionManagement(session -> session
 					.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
 			.authorizeHttpRequests(authz -> authz
-					.requestMatchers("/auth/login", "/token", "/jwks.json").permitAll()
+					.requestMatchers("/auth/login", "/token", "/token/refresh", "/jwks.json").permitAll()
 					.anyRequest().authenticated())
 			.formLogin(form -> form
 					.loginPage("/login")

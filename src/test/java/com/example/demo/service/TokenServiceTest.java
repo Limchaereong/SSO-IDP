@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
@@ -12,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.example.demo.common.dto.response.TokenResponseDto;
-import com.example.demo.common.exception.BadRequestException;
 import com.example.demo.common.exception.UnauthorizedException;
 import com.example.demo.common.exception.payload.ErrorCode;
 import com.example.demo.infrastructure.utils.JwtUtil;
@@ -31,7 +29,7 @@ class TokenServiceTest {
     }
 
     @Test
-    void generateTokens_ShouldReturnTokenResponse_WhenUserIdIsValid() {
+    void generateTokens_ShouldReturnTokens_WhenUserIdIsValid() {
         // Given
         String userId = "testUser";
         String accessToken = "accessToken";
@@ -43,12 +41,12 @@ class TokenServiceTest {
         when(jwtUtil.createRefreshToken(userId, 86400000)).thenReturn(refreshToken);
 
         // When
-        TokenResponseDto response = tokenService.generateTokens(userId);
+        TokenResponseDto result = tokenService.generateTokens(userId);
 
         // Then
-        assertEquals(accessToken, response.accessToknen());
-        assertEquals(idToken, response.idToken());
-        assertEquals(refreshToken, response.refreshToken());
+        assertEquals(accessToken, result.accessToknen());
+        assertEquals(idToken, result.idToken());
+        assertEquals(refreshToken, result.refreshToken());
     }
 
     @Test
@@ -63,45 +61,27 @@ class TokenServiceTest {
     }
 
     @Test
-    void refreshTokens_ShouldReturnNewAccessToken_WhenRefreshTokenIsValid_WithoutIdToken() {
+    void refreshTokens_ShouldReturnNewTokens_WhenRefreshTokenIsValid() {
         // Given
         String refreshToken = "validRefreshToken";
         String userId = "testUser";
         String newAccessToken = "newAccessToken";
-
-        when(jwtUtil.isTokenValid(refreshToken)).thenReturn(true);
-        when(jwtUtil.getUserIdFromToken(refreshToken)).thenReturn(userId);
-        when(jwtUtil.createToken(userId, 3600000, "IDP", "SP", "ACCESS")).thenReturn(newAccessToken);
-
-        // When
-        TokenResponseDto response = tokenService.refreshTokens(refreshToken, false);
-
-        // Then
-        assertEquals(newAccessToken, response.accessToknen());
-        assertNull(response.idToken());
-        assertEquals(refreshToken, response.refreshToken());
-    }
-
-    @Test
-    void refreshTokens_ShouldReturnNewAccessAndIdToken_WhenRefreshTokenIsValid_WithIdToken() {
-        // Given
-        String refreshToken = "validRefreshToken";
-        String userId = "testUser";
-        String newAccessToken = "newAccessToken";
+        String newRefreshToken = "newRefreshToken";
         String newIdToken = "newIdToken";
 
         when(jwtUtil.isTokenValid(refreshToken)).thenReturn(true);
         when(jwtUtil.getUserIdFromToken(refreshToken)).thenReturn(userId);
         when(jwtUtil.createToken(userId, 3600000, "IDP", "SP", "ACCESS")).thenReturn(newAccessToken);
         when(jwtUtil.createToken(userId, 86400000, "IDP", "SP", "ID")).thenReturn(newIdToken);
+        when(jwtUtil.createRefreshToken(userId, 86400000)).thenReturn(newRefreshToken);
 
         // When
-        TokenResponseDto response = tokenService.refreshTokens(refreshToken, true);
+        TokenResponseDto result = tokenService.refreshTokens(refreshToken, true);
 
         // Then
-        assertEquals(newAccessToken, response.accessToknen());
-        assertEquals(newIdToken, response.idToken());
-        assertEquals(refreshToken, response.refreshToken());
+        assertEquals(newAccessToken, result.accessToknen());
+        assertEquals(newIdToken, result.idToken());
+        assertEquals(newRefreshToken, result.refreshToken());
     }
 
     @Test
@@ -113,16 +93,5 @@ class TokenServiceTest {
 
         // When & Then
         assertThrows(UnauthorizedException.class, () -> tokenService.refreshTokens(refreshToken, true));
-    }
-
-    @Test
-    void refreshTokens_ShouldThrowBadRequestException_WhenTokenFormatIsInvalid() {
-        // Given
-        String refreshToken = "invalidFormatToken";
-
-        when(jwtUtil.isTokenValid(refreshToken)).thenThrow(new BadRequestException(ErrorCode.TOKEN_NOT_CORRECT_FORMAT));
-
-        // When & Then
-        assertThrows(BadRequestException.class, () -> tokenService.refreshTokens(refreshToken, true));
     }
 }

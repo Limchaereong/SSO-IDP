@@ -83,7 +83,7 @@ public class JwtUtil {
     
     public String getUserIdFromToken(String token) {
     	try {
-    		String[] parts = token.split("\\,");
+    		String[] parts = token.split("\\.");
     		if(parts.length != 3) {
     			throw new BadRequestException(ErrorCode.TOKEN_NOT_CORRECT_FORMAT);
     		}

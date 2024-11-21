@@ -19,32 +19,26 @@ import jakarta.servlet.http.HttpSession;
 
 @Service
 public class AuthenticationService {
-	
-	@Autowired
-	private UserRepository userRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
 
-	@Autowired
-	private TokenService tokenService;
-
-	@Autowired
-	private SessionService sessionService;
-	
-	public TokenResponseDto authenticate(AuthenticationRequestDto request, HttpSession session) {
-		Optional<User> userOpt = userRepository.findByUsername(request.username());
-		
-		if(userOpt.isEmpty()) {
-			throw new NotFoundException(ErrorCode.NOT_FOUND_USER);
-		}
-		
-		User user = userOpt.get();
-		
-		if(!user.password().equals(request.password())) {
-			throw new UnauthorizedException(ErrorCode.PASSWORD_NOT_CORRECT);
-		}
-		
-		sessionService.createSession(session, user.userId());
-		
-		return tokenService.generateTokens(user.userId());
-	}
-
+    @Autowired
+    private TokenService tokenService;
+    
+    public TokenResponseDto authenticate(AuthenticationRequestDto request) {
+        Optional<User> userOpt = userRepository.findByUsername(request.username());
+        
+        if(userOpt.isEmpty()) {
+            throw new NotFoundException(ErrorCode.NOT_FOUND_USER);
+        }
+        
+        User user = userOpt.get();
+        
+        if(!user.password().equals(request.password())) {
+            throw new UnauthorizedException(ErrorCode.PASSWORD_NOT_CORRECT);
+        }
+        
+        return tokenService.generateTokens(user.userId());
+    }
 }
