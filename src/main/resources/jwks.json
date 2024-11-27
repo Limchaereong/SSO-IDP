@@ -5,15 +5,7 @@
       "kid": "kid-fixed-key",
       "use": "sig",
       "alg": "RS256",
-      "n": "public-key-value-here",
-      "e": "AQAB"
-    },
-    {
-      "kty": "RSA",
-      "kid": "another-key-id",
-      "use": "sig",
-      "alg": "RS256",
-      "n": "another-public-key-value-here",
+      "n": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp2SwoMnBYznOHjGB8xBPRbwh4SKrKmNGQYZvAbJYwPSezYNkFxPzJWKZEbhmKxJh7273y9z2pJtb9NcBcfRhaASu4J4JfTr1LkEBHLqVmbjSfPdb8cvhGLIUOq9d6mgOX04NVCzQT5DKkpl7G3leZFhYF9oyjgguMRCGKnXnIQP2vbbkqCe2fE54JgA8mHXx06gSPxCyPAK8qPCuBHoAFkAYqGR0St7zC2FLOxq49AaiaIClzV2CAhePVeGsFyqvDeBbXZzGN5Ng51VkCGd1hiODBuKv63C2alE15NZtV1AMg1d7ui7VdrYJa5Xz8xQQAGSCz0HQj8h",
       "e": "AQAB"
     }
   ]

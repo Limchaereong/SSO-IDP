@@ -13,6 +13,7 @@ public enum ErrorCode {
 	TOKEN_GENERATION_FAILED(HttpStatus.UNAUTHORIZED, "토큰 생성에 실패하였습니다."),
 	TOKEN_VALIDATION_FAILED(HttpStatus.UNAUTHORIZED, "토큰 유효성 검사에 실패하였습니다."),
 	PASSWORD_NOT_CORRECT(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
+	TOKEN_RE_GENERATION_FAILED(HttpStatus.UNAUTHORIZED, "토큰 재생성에 실패하였습니다."),
 
 	// 404 - Not Found
 	NOT_FOUND_JWKS_FILE(HttpStatus.NOT_FOUND, "JWKS 파일을 찾지 못했습니다"),

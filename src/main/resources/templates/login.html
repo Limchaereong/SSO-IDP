@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - IDP</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
     <div class="login-container">
@@ -44,7 +44,7 @@
                     const data = await response.json();
                     document.getElementById('message').textContent = 'Login successful! Redirecting...';
                     setTimeout(() => {
-                        window.location.href = '/home';
+						window.location.href = 'http://10.120.60.208:8080/home';
                     }, 2000);
                 } else {
                     document.getElementById('message').textContent = 'Login failed. Please try again.';

@@ -1,0 +1,18 @@
+<!-- home.html: IDP 서버 홈 페이지 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDP Home</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="home-container">
+        <h2>Welcome to IDP Home</h2>
+        <p>You are successfully logged in. Choose which service provider you want to access:</p>
+        <button onclick="window.location.href='http://10.120.60.208:8070/resource/protected'">Go to SP1</button>
+        <button onclick="window.location.href='http://10.120.60.208:8060/resource/protected'">Go to SP2</button>
+    </div>
+</body>
+</html>

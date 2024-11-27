@@ -28,15 +28,10 @@ public class AuthenticationController {
     public ResponseEntity<ApiResponse<String>> login(@RequestBody AuthenticationRequestDto request, HttpServletResponse response) {
         TokenResponseDto tokens = authenticationService.authenticate(request);
         
-        Cookie accessTokenCookie = new Cookie("accessToken", tokens.accessToknen());
+        Cookie accessTokenCookie = new Cookie("accessToken", tokens.accessToken());
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
         response.addCookie(accessTokenCookie);
-        
-        Cookie idTokenCookie = new Cookie("idToken", tokens.idToken());
-        idTokenCookie.setHttpOnly(true);
-        idTokenCookie.setPath("/");
-        response.addCookie(idTokenCookie);
         
         Cookie refreshTokenCookie = new Cookie("refreshToken", tokens.refreshToken());
         refreshTokenCookie.setHttpOnly(true);
@@ -45,4 +40,11 @@ public class AuthenticationController {
         
         return ResponseEntity.ok(ApiResponse.success("Login successful"));
     }
+    
+//    @PostMapping("/login")
+//    public ResponseEntity<ApiResponse<TokenResponseDto>> login(@RequestBody AuthenticationRequestDto request, HttpServletResponse response) {
+//        TokenResponseDto tokens = authenticationService.authenticate(request);
+//        
+//        return ResponseEntity.ok(ApiResponse.success(tokens));
+//    }
 }
