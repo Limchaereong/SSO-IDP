@@ -77,4 +77,18 @@ public class TokenService {
         }
         return jwtUtil.getUserIdFromToken(accessToken);
     }
+    
+    public TokenResponseDto refreshAccessToken(String refreshToken) {
+        try {
+            if (refreshToken == null || !jwtUtil.isTokenValid(refreshToken)) {
+                throw new UnauthorizedException(ErrorCode.INVALID_TOKEN);
+            }
+
+            String userId = jwtUtil.getUserIdFromToken(refreshToken);
+            return generateTokens(userId);
+        } catch (Exception e) {
+            throw new UnauthorizedException(ErrorCode.TOKEN_GENERATION_FAILED);
+        }
+    }
+    
 }

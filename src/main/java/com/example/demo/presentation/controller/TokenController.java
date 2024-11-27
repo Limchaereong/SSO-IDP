@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.common.dto.response.TokenResponseDto;
 import com.example.demo.common.response.ApiResponse;
 import com.example.demo.service.TokenService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,18 +32,33 @@ public class TokenController {
             HttpServletResponse response) {
 
         String userId = tokenService.getUserIdFromAccessToken(accessToken);
-        
         String idToken = tokenService.generateIdToken(userId, spIdentifier);
 
-        ApiResponse<String> apiResponse = ApiResponse.success(idToken);
-
         TokenResponseDto tokens = tokenService.generateTokens(userId);
+
+        addTokenCookies(response, tokens);
 
         Cookie idTokenCookie = new Cookie("idToken", idToken);
         idTokenCookie.setHttpOnly(true);
         idTokenCookie.setPath("/");
         response.addCookie(idTokenCookie);
 
+        return ResponseEntity.ok(ApiResponse.success(idToken));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<TokenResponseDto>> refreshAccessToken(
+            @RequestHeader("refreshToken") String refreshToken,
+            HttpServletResponse response) {
+
+        TokenResponseDto tokens = tokenService.refreshAccessToken(refreshToken);
+
+        addTokenCookies(response, tokens);
+
+        return ResponseEntity.ok(ApiResponse.success(tokens));
+    }
+
+    private void addTokenCookies(HttpServletResponse response, TokenResponseDto tokens) {
         Cookie accessTokenCookie = new Cookie("accessToken", tokens.accessToken());
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
@@ -54,8 +68,5 @@ public class TokenController {
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
         response.addCookie(refreshTokenCookie);
-
-        return ResponseEntity.ok(ApiResponse.success(idToken));
     }
-    
 }
